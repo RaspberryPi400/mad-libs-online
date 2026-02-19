@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mad Libs Online</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 600px; margin: auto; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .hidden { display: none; }
+        input, select, button { display: block; width: 100%; margin: 10px 0; padding: 10px; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #45a049; }
+        #storyDisplay { background: #fffde7; padding: 15px; border-left: 5px solid #ffd600; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Mad Libs Online</h1>
+    
+    <div id="step1">
+        <label for="storySelect">Which story would you like?</label>
+        <select id="storySelect">
+            <option value="1">Cooking Show</option>
+            <option value="2">Sci-Fi Mission</option>
+            <option value="3">Medieval Quest</option>
+        </select>
+        <button onclick="setupForm()">Start Story</button>
+    </div>
+
+    <div id="step2" class="hidden">
+        <div id="inputsContainer"></div>
+        <button onclick="generateStory()">Generate Story!</button>
+    </div>
+
+    <div id="step3" class="hidden">
+        <h2>Your Story:</h2>
+        <div id="storyDisplay"></div>
+        <button onclick="location.reload()">Play Again</button>
+    </div>
+</div>
+
+<script>
+    const configs = {
+        "1": {
+            labels: ["Type of Liquid", "Plural Noun (Kitchen Tool)", "Adjective", "Specific Vegetable", "Verb (Action)", "Unit of Time", "Gross Food Item", "Noun"],
+            template: (vals) => `Welcome back to Extreme Chef. Our contestant today is attempting a bold move: deglazing the pan with a splash of <b>${vals[0]}</b>. The judges look nervous, especially since he's using a pair of <b>${vals[1]}</b> instead of a spatula. 'This dish needs to feel <b>${vals[2]}</b>,' the chef whispers, aggressively tossing a handful of shredded <b>${vals[3]}</b> into the air. He begins to <b>${vals[4]}</b> around the kitchen, claiming the flavor needs to develop for at least one <b>${vals[5]}</b>. For the final touch, he garnishes the plate with a single, wilted <b>${vals[6]}</b> and serves it on a literal <b>${vals[7]}</b>. The head judge takes one bite, turns pale, and asks for a trash can.`
+        },
+        "2": {
+            labels: ["Adjective", "Noun (Part of a Ship)", "Verb (Ending in -ing)", "Number", "Plural Noun (Living Things)", "Noun", "Silly Word", "Exclamation"],
+            template: (vals) => `Captain's Log, Stardate <b>${vals[3]}</b>. Our mission to the Andromeda Galaxy has hit a <b>${vals[0]}</b> snag. While we were <b>${vals[2]}</b> through the Horsehead Nebula, the ship's <b>${vals[1]}</b> suddenly began to glow bright purple and hum a low tune. Before I could hit the emergency eject button, a group of wild <b>${vals[4]}</b> teleported onto the bridge. They didn't want our technology; they just wanted to trade us a mysterious <b>${vals[5]}</b> for all of our freeze-dried ice cream. My first officer shouted, '<b>${vals[7]}</b>!' but it was too late. We are now drifting toward a black hole named <b>${vals[6]}</b>, and the only thing left to do is hope the engines start working before dinner.`
+        },
+        "3": {
+            labels: ["Adjective", "Noun (Weapon/Tool)", "Verb", "Mythical Creature", "Plural Noun (Body Parts)", "Noun (Object)", "Adverb", "Exclamation"],
+            template: (vals) => `Sir Lancelot set off on a/an <b>${vals[0]}</b> journey to rescue the kingdom's crown. Instead of a sword, he accidentally grabbed a <b>${vals[1]}</b> from the castle kitchen. When he reached the Dark Cave, he tried to <b>${vals[2]}</b>, but he was immediately blocked by a giant, three-headed <b>${vals[3]}</b>. The beast looked at him, blinked its six <b>${vals[4]}</b>, and offered him a deal: he could have the crown back if he could successfully balance a/an <b>${vals[5]}</b> on his nose for ten minutes. Lancelot tried to do it <b>${vals[6]}</b>, but he sneezed and shouted '<b>${vals[7]}</b>!' The crown was lost forever, but he did get a free souvenir mug.`
+        }
+    };
+
+    let selectedStory = "";
+
+    function setupForm() {
+        selectedStory = document.getElementById('storySelect').value;
+        const container = document.getElementById('inputsContainer');
+        container.innerHTML = ''; // Clear previous
+
+        configs[selectedStory].labels.forEach((label, index) => {
+            const input = document.createElement('input');
+            input.placeholder = label;
+            input.id = `input-${index}`;
+            container.appendChild(input);
+        });
+
+        document.getElementById('step1').classList.add('hidden');
+        document.getElementById('step2').classList.remove('hidden');
+    }
+
+    function generateStory() {
+        const inputs = configs[selectedStory].labels.map((_, i) => document.getElementById(`input-${i}`).value || "____");
+        const storyHtml = configs[selectedStory].template(inputs);
+        
+        document.getElementById('storyDisplay').innerHTML = storyHtml;
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.remove('hidden');
+    }
+</script>
+<footer>
+  <p>Copyright (c) 2026 Elijah Corwin</p>
+</footer>
+</body>
+</html>
